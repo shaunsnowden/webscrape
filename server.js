@@ -12,7 +12,7 @@ var db = require("./models");
 
 var PORT = 8080;
 
-// Initialize Express
+// Initialize Expresss
 var app = express();
 
 // Configure middleware
@@ -76,11 +76,12 @@ app.get("/scrape", function(req,res){
 })
 
 // Route for getting all Articles from the db
-app.get("api/articles", function (req, res) {
+app.get("/api/articles", function (req, res) {
   // Grab every document in the Articles collection
-  db.articles
+  db.Article
     .find({})
     .then(function (dbArticles) {
+      console.log(dbArticles);
       // If we were able to successfully find Articles, send them back to the client
       res.json(dbArticles);
     })
