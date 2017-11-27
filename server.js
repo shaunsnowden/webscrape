@@ -28,7 +28,24 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // Use express.static to serve the public folder as a static directory
 app.use(express.static("public"));
 
+// ----------------------Database config with Mongoose -----------------------
+var databaseUri = 'mongodb://localhost/snowstrike';
 
+if(process.env.MONGODDB_URI){
+  mongoose.connect(process.env.MONGODB_URI);
+} else {
+  mongoose.connect(databaseUri);
+}
+
+var db = mongoose.connection;
+
+db.on('error', function(err) {
+  console.log('mongoose error: ',err);
+});
+
+db.once('open', function(){
+  console.log('Mongoose connection successful!');
+});
 // Set mongoose to leverage built in JavaScript ES6 Promises
 // Connect to the Mongo DB
 mongoose.Promise = Promise;
