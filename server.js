@@ -28,30 +28,37 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // Use express.static to serve the public folder as a static directory
 app.use(express.static("public"));
 
-// ----------------------Database config with Mongoose -----------------------
-var databaseUri = 'mongodb://localhost/snowstrike';
 
-if(process.env.MONGODDB_URI){
+// ----------------------Database config with Mongoose -----------------------
+// ====================DEFINE LOCAL MONGODB URI===============================
+var databaseUri = 'mongodb://localhost/SnowScraper';
+console.log(process.env.MONGODB_URI);
+
+
+if(process.env.MONGODB_URI){
   mongoose.connect(process.env.MONGODB_URI);
 } else {
-  mongoose.connect(databaseUri);
+  mongoose.connect(databaseUri,{useMongoClient: true});
 }
 
-var db = mongoose.connection;
 
-db.on('error', function(err) {
-  console.log('mongoose error: ',err);
-});
+// var db = mongoose.connection;
 
-db.once('open', function(){
-  console.log('Mongoose connection successful!');
-});
+// db.on('error', function(err) {
+//   console.log('mongoose error: ',err);
+// });
+
+// db.once('open', function(){
+//   console.log('Mongoose connection successful!');
+// });
 // Set mongoose to leverage built in JavaScript ES6 Promises
-// Connect to the Mongo DB
+
+
+// // Connect to the Mongo DB
 mongoose.Promise = Promise;
-mongoose.connect("mongodb://localhost/SnowScraper", {
-  useMongoClient: true
-});
+// mongoose.connect("mongodb://localhost/SnowScraper", {
+//   useMongoClient: true
+// });
 
 app.get("/scrape", function(req,res){
   axios.get("https://www.mckinsey.com/business-functions/digital-mckinsey/our-insights").then(function (response) {
