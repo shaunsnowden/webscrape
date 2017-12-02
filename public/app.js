@@ -45,19 +45,20 @@ $(document).ready(function () {
     var panel = $(
       [
         "<div class='panel panel-default'>",
-        "<div class='panel-heading'>",
-        "<h3>",
-        "<a class='article-link' target='_blank' href='https://www.mckinsey.com/business-functions/digital-mckinsey/our-insights" + article.localLink + "'>",
-        article.title,
-        "</a>",
-        "<a class='btn btn-success save'>",
-        "Save Article",
-        "</a>",
-        "</h3>",
-        "</div>",
-        "<div class='panel-body'>",
-        article.summary,
-        "</div>",
+          "<div class='panel-heading'>",
+            "<h4>",
+              "<a class='article-link' target='_blank' href='https://www.mckinsey.com/business-functions/digital-mckinsey/our-insights" + article.localLink + "'>",
+              article.title,
+              "</a>",
+            "</h4>",
+            `<p>${article.time}</p>`,
+            "<a class='btn btn-success save'>",
+              "Save Article",
+            "</a>",
+          "</div>",
+          "<div class='panel-body'>",
+            article.summary,
+          "</div>",
         "</div>"
       ].join("")
     );

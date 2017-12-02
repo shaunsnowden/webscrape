@@ -8,7 +8,8 @@ const axios = require("axios");
 const cheerio = require("cheerio");
 
 // Require all models
-var db = require("./models");
+var joinedArticle = require("./models");
+console.log(`var imported ${joinedArticle}`);
 
 var PORT = process.env.PORT || 8080;
 
@@ -32,7 +33,6 @@ app.use(express.static("public"));
 // ----------------------Database config with Mongoose -----------------------
 // ====================DEFINE LOCAL MONGODB URI===============================
 var databaseUri = 'mongodb://localhost/SnowScraper';
-console.log(process.env.MONGODB_URI);
 
 
 if(process.env.MONGODB_URI){
@@ -42,23 +42,21 @@ if(process.env.MONGODB_URI){
 }
 
 
-// var db = mongoose.connection;
+var db = mongoose.connection;
 
-// db.on('error', function(err) {
-//   console.log('mongoose error: ',err);
-// });
+db.on('error', function(err) {
+  console.log('mongoose error: ',err);
+});
 
-// db.once('open', function(){
-//   console.log('Mongoose connection successful!');
-// });
+db.once('open', function(){
+  console.log('Mongoose connection successful!');
+});
 // Set mongoose to leverage built in JavaScript ES6 Promises
 
 
 // // Connect to the Mongo DB
 mongoose.Promise = Promise;
-// mongoose.connect("mongodb://localhost/SnowScraper", {
-//   useMongoClient: true
-// });
+
 
 app.get("/scrape", function(req,res){
   axios.get("https://www.mckinsey.com/business-functions/digital-mckinsey/our-insights").then(function (response) {
@@ -85,9 +83,9 @@ app.get("/scrape", function(req,res){
         .attr('href');
 
       // Create a new Article using the `result` object built from scraping
-      db.Article
+      joinedArticle.Article
         .create(result)
-        .then(function (dbArticle) {
+        .then(function (joinedArticleArticle) {
           // If we were able to successfully scrape and save an Article, send a message to the client
           res.send("Scrape Complete");
         })
@@ -102,12 +100,12 @@ app.get("/scrape", function(req,res){
 // Route for getting all Articles from the db
 app.get("/api/articles", function (req, res) {
   // Grab every document in the Articles collection
-  db.Article
+  joinedArticle.Article
     .find({})
-    .then(function (dbArticles) {
-      console.log(dbArticles);
+    .then(function (joinedArticleArticles) {
+      console.log(joinedArticleArticles);
       // If we were able to successfully find Articles, send them back to the client
-      res.json(dbArticles);
+      res.json(joinedArticleArticles);
     })
     .catch(function (err) {
       // If an error occurred, send it to the client
@@ -118,13 +116,13 @@ app.get("/api/articles", function (req, res) {
 // Route for grabbing a specific Article by id, populate it with it's note
 app.get("/articles/:id", function (req, res) {
   // Using the id passed in the id parameter, prepare a query that finds the matching one in our db...
-  db.Article
+  joinedArticle.Article
     .findOne({ _id: req.params.id })
     // ..and populate all of the notes associated with it
     .populate("note")
-    .then(function (dbArticle) {
+    .then(function (joinedArticleArticle) {
       // If we were able to successfully find an Article with the given id, send it back to the client
-      res.json(dbArticle);
+      res.json(joinedArticleArticle);
     })
     .catch(function (err) {
       // If an error occurred, send it to the client
@@ -132,7 +130,6 @@ app.get("/articles/:id", function (req, res) {
     });
 });
 
-// var db = mongojs('SnowScraper', ['webdevdata']);
 // // This removes all data each time
 // db.webdevdata.remove({});
 
@@ -159,10 +156,10 @@ app.get("/articles/:id", function (req, res) {
 //     }
 
 
-//     db.webdevdata.insert(post);
+//     joinedArticle.webdevdata.insert(post);
 //   });
 
-//   db.close();
+//   joinedArticle.close();
 
 // });
 
